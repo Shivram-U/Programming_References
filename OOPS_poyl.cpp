@@ -1,8 +1,3 @@
-SHIVRAM U CSE <2112088@nec.edu.in>
-	
-Mon, Nov 7, 9:57 AM (4 days ago)
-	
-to me
 // Polymorphism in C++
 #include <iostream>
 using namespace std;

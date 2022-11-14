@@ -90,9 +90,29 @@ class temp1
         for(int i=0;i<3;i++)
             this->t[i]+=a;
     }
+    /*
     void* operator new (size_t size)
     {
-        return (void*)::new long int(20);                                           // Memory Management, NEW SCENARIO 
+        return (void*)::new long int(10);                                           // Memory Management, NEW SCENARIO 
+    }*/
+    
+    void* operator new(size_t size)
+    {
+        cout<<"New Operator Overloaded with respect to Class 'temp1'\n";
+        return ::operator new(size);
+        //  Here the Point is, we are returning only the ADDRESS of the MEMORY allocated, no type is specified, inside the function, Since the return type is 'VOID*'.
+        //  return (void*)::operator new(size);                                           // Valid
+        //  return (void*):: new int(10);                                                 // Valid
+        //  return new temp1;                                                             // Invalid, Calls the Same Overloaded new Operator in the Class, resulting in Recursive Call.
+        //  return (::new temp1);                                                         // Valid Since, it calls Global(Actual) new Operator.
+        //  return *(:: new temp1) or return temp1()                                     // ERROR, since, there is only provision to return a Void pointer, in the Operator Overloading Function, hence cannot return a Solid Object. 
+    }
+    
+    void operator delete(void* p)
+    {
+        cout<<"Delete Operator Overloaded with respect to Class 'temp1'\n";
+        free(p);
+        //delete p;
     }
     temp1 operator-(temp1&);
     friend temp1 operator +(temp1&,temp1&);
@@ -136,10 +156,16 @@ int main()
     t14.print();
     t13+=100;
     t13.print();
+    temp1 *t15 = new temp1();
+    t15->print();
+    *(t15)+=4;
+    t15->print();
+    delete(t15);
     int* a = (int*)new temp1();
     char* a1 = (char*)new temp1();
     char* a2 = (char*)new temp1();
     //printf("[%d]",sizeof(a));
+    /*
     for(int i=0;i<50;i++)
     {
         a[i] = i;
@@ -147,7 +173,9 @@ int main()
         a2[i] = i+65;
         cout<<i<<' '<<a[i]<<' '<<a1[i]<<' '<<a2[i]<<'\n';
     }
+      */  
+    /*
     for(int i=0;i<240;i++)                                                        // Entire ASCII System
             printf("| %d %c|",i,i);
-    printf("\n%d",'\n');
+    printf("\n%d",'\n');*/
 }

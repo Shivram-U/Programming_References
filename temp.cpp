@@ -1,6 +1,8 @@
 #include<iostream>
 #include<stdio.h>
 #include<stdlib.h>
+#define temp Arith_OP_OL
+#define temp1 Relat_OP_OL
 using namespace std;
 
 // Type Conversion Operator Overloading
@@ -35,44 +37,135 @@ Reference:
 
 
 
-class temp
+class Arith_OP_OL                                                                              // Arithmetic Operators Overloading
 {
     public:
-    int a,b,c;
+    int t[10];
     temp(int a,int b,int c)
     {
-        this->a = a;
-        this->b = b;
-        this->c = c;
+        this->t[0] = a;
+        this->t[1] = b;
+        this->t[2] = c;
     }
     temp(){}
+    
+    void print()
+    {
+        cout<<"t[0] : "<<this->t[0]<<" t[1] : "<<this->t[1]<<" t[2] : "<<this->t[2]<<'\n';
+    }
+    
     void operator ++()
     {
         cout<<"++ - Unary Operator Overloaded \n";
-        this->a++;
-        this->b++;
-        this->c++;
+        this->t[0]++;
+        this->t[1]++;
+        this->t[2]++;
     }
+    
+    void operator +=(int a)
+    {
+        cout<<"+= Operator Overloaded\n";
+        for(int i=0;i<3;i++)
+            this->t[i]+=a;
+    }
+    
     temp operator +(temp& t)                                                            // Operator Overloaded inside CLASS SCOPE.
     {
         cout<<"+ - Binary Operator Overloaded in 'temp' Scope to add Data Members of two Objects"<<'\n';
         temp t1;
-        t1.a = this->a+t.a;
-        t1.b = this->b+t.b;
-        t1.c = this->c+t.c;
+        t1.t[0] = this->t[0]+t.t[0];
+        t1.t[1] = this->t[1]+t.t[1];
+        t1.t[2] = this->t[2]+t.t[2];
         return t1;
     }
-    void operator +(int a)
+    void operator +(int a)                                                          // Both the operator Overloading are overlodade, with the kind of parameters.
     {
         cout<<"+ - Binary Operator Overloaded 'temp' Scope to display :"<<a<<'\n';
     }
     //int operator +()                                                              // Invalid, Since '+' is a Binary Operator.
-    void print()
-    {
-        cout<<"a : "<<this->a<<" b : "<<this->b<<" c : "<<this->c<<'\n';
-    }
+   
+    temp operator/(temp&);
+    friend temp operator *(temp&,temp&);
 };
 
+temp operator *(temp &t1,temp &t2)                                               // Operator overloaded using, friend function, takes one argument extra.
+{
+    cout<<"+ Operator overloaded in class 'temp' Scope\n";
+    temp te;
+    for(int i=0;i<3;i++)    
+        te.t[i] = t1.t[i]*t2.t[i];
+    return te;
+}
+
+temp temp::operator /(temp &t1)                                                  // access the Class Scope, without proper Provision is Unauthorized. // It also takes one argument less than friend Function method.
+{
+    cout<<"- Operator overloaded in class 'temp' Scope\n";
+    temp te;
+    for(int i=0;i<3;i++)    
+        te.t[i] = this->t[i]/t1.t[i];
+    return te;
+}
+
+
+class Relat_OP_OL
+{
+    public :
+    int main;
+    int t[4];
+    temp1(int a,int b,int c)
+    {
+        main = a+b+c;
+        t[0] = a;
+        t[1] = b;
+        t[2] = c;
+    }
+    
+    bool operator <(int a)
+    {
+        cout<<"'<' operator is overloaded in class 'temp1'\n";
+        if(this->main<a)
+            return true;
+        else
+            return false;
+    }
+    
+    int operator <(temp1 a)
+    {
+        cout<<"'<' operator is overloaded in class 'temp1'\n";
+        if(this->main<=a.main)
+            return 1;
+        else
+            return 0;
+    }
+    void operator <=(int a)
+    {
+        cout<<"'<=' operator is overloaded in class 'temp1'\n";
+    }
+    
+    bool operator >(int a)
+    {
+        cout<<"'>' operator is overloaded in class 'temp1'\n";
+        if(this->main>a)
+            return true;
+        else
+            return false;
+    }
+    
+    int operator >(temp1 a)
+    {
+        cout<<"'>' operator is overloaded in class 'temp1'\n";
+        if(this->main>a.main)
+            return 1;
+        else
+            return 0;
+    }
+    
+    int operator ==(temp1 t)
+    {
+        return (t.main == main)?1:0;
+    }
+};
+/*
 class temp1
 {
     public:
@@ -88,17 +181,12 @@ class temp1
     {
         cout<<"t[0] : "<<this->t[0]<<" t[1] : "<<this->t[1]<<" t[2] : "<<this->t[2]<<'\n';
     }
-    void operator +=(int a)
-    {
-        cout<<" += Operator Overloaded\n";
-        for(int i=0;i<3;i++)
-            this->t[i]+=a;
-    }
-    /*
+    
+    
     void* operator new (size_t size)
     {
         return (void*)::new long int(10);                                           // Memory Management, NEW SCENARIO 
-    }*/
+    }
     
     void* operator new(size_t size)
     {
@@ -118,27 +206,10 @@ class temp1
         free(p);
         //delete p;
     }
-    temp1 operator-(temp1&);
-    friend temp1 operator +(temp1&,temp1&);
+    
 };
+*/
 
-temp1 operator +(temp1 &t1,temp1 &t2)                                               // Operator overloaded using, friend function, takes one argument extra.
-{
-    cout<<" + Operator overloaded in class 'temp1' Scope\n";
-    temp1 te;
-    for(int i=0;i<3;i++)    
-        te.t[i] = t1.t[i]+t2.t[i];
-    return te;
-}
-
-temp1 temp1::operator -(temp1 &t1)                                                  // access the Class Scope, without proper Provision is Unauthorized. // It also takes one argument less than friend Function method.
-{
-    cout<<" - Operator overloaded in class 'temp1' Scope\n";
-    temp1 te;
-    for(int i=0;i<3;i++)    
-        te.t[i] = this->t[i]-t1.t[i];
-    return te;
-}
 
 // Global Operator Overloading:
 /*
@@ -164,23 +235,39 @@ void* operator new(size_t size)
 
 int main()
 {
-    
-    temp t1(10,100,1000),t2(1,2,3);
-    temp t3 = t1+t2;
-    t1.print();
-    t2.print();
-    t3.print();
-    +t2;
-    +3;
-    t1+3;
-    ++t3;
-    //t3+;                                                                          // Invalid Syntax.
-    t1.print();
-    t2.print();
-    t3.print();
-    //printf("[%d]",t3);
-    
+    // Operator OVerloading
+        // GLobal Scope:
+            +3;
+    //Local(Class) Scope        
+        // Arithmetic Operators Overloading:
+        /*
+        temp t1(10,100,1000),t2(1,2,3);                                                 // Object Creation
+            temp t3 = t1+t2,t4,t5;          
+        t1.print();
+        t2.print();
+        t3.print();
+            +t2;
+            t1+3;
+            ++t3;
+            t2+=1000;
+            //t3+;                                                                          // Invalid Syntax.
+        t1.print();
+        t2.print();
+        t3.print();
+            t4 = t1*t2;                                                 // using FRIEND FUNCTION
+            t5 = t2/t2;                                                 // using SCOPE RESOLUTION                                                         
+        t4.print();
+        t5.print();
+        //printf("[%d]",t3);
+        */
+        //Relational Operator Overloading:
+        temp1 t11(10,20,30),t12(100,200,300), t13(10,20,30);
+        printf("Data Member Main in t11 is %s\n",(t11 > t12)?"Less":"Greater");
+        printf("Data Member Main int t11 is %s\n",(t11 < t12)?"Greater":"Less");
+        printf("Data Member Main is %s\n",(t11 == t13)?"Equal":"Not Equal");
+        t11<=10;
     // Overloading Methodologies:
+    /*
     temp1 t11(9,8,7),t12(6,5,4);
     t11.print();
     t12.print();
@@ -188,7 +275,6 @@ int main()
     temp1 t14 = t11+t12;
     t13.print();
     t14.print();
-    t13+=100;
     t13.print();
     temp1 *t15 = new temp1();
     t15->print();
@@ -199,7 +285,7 @@ int main()
     char* a1 = (char*)new temp1();
     char* a2 = (char*)new temp1();
     //printf("[%d]",sizeof(a));
-    /*
+    *//*
     for(int i=0;i<50;i++)
     {
         a[i] = i;

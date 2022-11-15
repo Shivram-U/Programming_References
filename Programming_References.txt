@@ -1,3 +1,5 @@
 Operator Overloading References:
     1. https://www.geeksforgeeks.org/why-overriding-both-the-global-new-operator-and-the-class-specific-operator-is-not-ambiguous/
     2. https://learn.microsoft.com/en-us/cpp/cpp/general-rules-for-operator-overloading?view=msvc-170
+    3. Type Conversion Operator Overloading
+            https://www.geeksforgeeks.org/conversion-operators-in-cpp/#:~:text=In%20C%2B%2B%2C%20the%20programmer,operator%20overloading%20function%20in%20class.

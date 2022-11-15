@@ -1,0 +1,3 @@
+Operator Overloading References:
+    1. https://www.geeksforgeeks.org/why-overriding-both-the-global-new-operator-and-the-class-specific-operator-is-not-ambiguous/
+    2. https://learn.microsoft.com/en-us/cpp/cpp/general-rules-for-operator-overloading?view=msvc-170

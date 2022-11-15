@@ -3,12 +3,6 @@
 #include<stdlib.h>
 using namespace std;
 
-/*
-int operator +(int a,int b)
-{
-    cout<<" '+' Operator Overloaded in the Global Scope "<<'\n';    
-    return a+b;
-}*/
 
 /*
 Operator Overloading:
@@ -39,6 +33,8 @@ Reference:
     1. https://stackoverflow.com/questions/58010917/scope-operator-in-operator-overloading#:~:text=If%20you%20define%20the%20operator,)%20%7B%20%2F%2F%20...%20%7D
 */
 
+
+
 class temp
 {
     public:
@@ -50,9 +46,16 @@ class temp
         this->c = c;
     }
     temp(){}
+    void operator ++()
+    {
+        cout<<"++ - Unary Operator Overloaded \n";
+        this->a++;
+        this->b++;
+        this->c++;
+    }
     temp operator +(temp& t)                                                            // Operator Overloaded inside CLASS SCOPE.
     {
-        cout<<"+ Operator Overloaded in 'temp' Scope to add Data Members of two Objects"<<'\n';
+        cout<<"+ - Binary Operator Overloaded in 'temp' Scope to add Data Members of two Objects"<<'\n';
         temp t1;
         t1.a = this->a+t.a;
         t1.b = this->b+t.b;
@@ -61,7 +64,7 @@ class temp
     }
     void operator +(int a)
     {
-        cout<<"+ Operator Overloaded 'temp' Scope to display :"<<a<<'\n';
+        cout<<"+ - Binary Operator Overloaded 'temp' Scope to display :"<<a<<'\n';
     }
     //int operator +()                                                              // Invalid, Since '+' is a Binary Operator.
     void print()
@@ -87,6 +90,7 @@ class temp1
     }
     void operator +=(int a)
     {
+        cout<<" += Operator Overloaded\n";
         for(int i=0;i<3;i++)
             this->t[i]+=a;
     }
@@ -120,6 +124,7 @@ class temp1
 
 temp1 operator +(temp1 &t1,temp1 &t2)                                               // Operator overloaded using, friend function, takes one argument extra.
 {
+    cout<<" + Operator overloaded in class 'temp1' Scope\n";
     temp1 te;
     for(int i=0;i<3;i++)    
         te.t[i] = t1.t[i]+t2.t[i];
@@ -128,10 +133,33 @@ temp1 operator +(temp1 &t1,temp1 &t2)                                           
 
 temp1 temp1::operator -(temp1 &t1)                                                  // access the Class Scope, without proper Provision is Unauthorized. // It also takes one argument less than friend Function method.
 {
+    cout<<" - Operator overloaded in class 'temp1' Scope\n";
     temp1 te;
     for(int i=0;i<3;i++)    
         te.t[i] = this->t[i]-t1.t[i];
     return te;
+}
+
+// Global Operator Overloading:
+/*
+                                    The Global Operator Overloading inside a Namespace, is allowed, only if the Overloading Function is associated with a User-Defined Datatypes such as Class,Enum etc.
+*/
+
+void operator +(temp t)
+{
+    cout<<" '+' Operator Overloaded in the Global Scope "<<'\n';    
+}
+/*
+void operator +(int t)              // _ERROR, since it is not associated with a user defined Datatype.
+{
+    cout<<" '+' Operator Overloaded in the Global Scope "<<'\n';    
+}*/
+
+void* operator new(size_t size)
+{
+    cout<<"New Operator is overloaded Globally\n";
+    return (void*)malloc(size);
+    //return new(size);
 }
 
 int main()
@@ -139,7 +167,13 @@ int main()
     
     temp t1(10,100,1000),t2(1,2,3);
     temp t3 = t1+t2;
+    t1.print();
+    t2.print();
+    t3.print();
+    +t2;
+    +3;
     t1+3;
+    ++t3;
     //t3+;                                                                          // Invalid Syntax.
     t1.print();
     t2.print();

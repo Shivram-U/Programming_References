@@ -9,6 +9,9 @@
 using namespace std;
 
 // Type Conversion Operator Overloading
+// ostream istream
+//Bitwise operator
+// typecast operator
 /*
 Operator Overloading:
                     The Operator Overloading, is a compile time Polymorphism, which is translated, at the Compile time itself.

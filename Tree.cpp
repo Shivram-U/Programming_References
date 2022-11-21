@@ -11,15 +11,23 @@ typedef struct nod
     struct nod *left,*right;
     
 }bnode;
+typedef struct nod1
+{
+    int data,bf;
+    struct nod1 *left,*right;
+    
+}abnode;
 
 class tree
 {
     public:
-    bnode *root;
+    bnode *Broot;
+    abnode *Aroot;
     int num;
     tree(int n)
     {
-        root = NULL;
+        Broot = NULL;
+        Aroot = NULL;
         num = n;
     }
     bnode* cr_bn()
@@ -37,13 +45,13 @@ class tree
         while(num>0)
         {
             c=0;
-            t1 = root;
+            t1 = Broot;
             t = cr_bn();
             cin>>t->data;
             tem = t->data;
-            if(root == NULL)
+            if(Broot == NULL)
             {
-                root =t;
+                Broot =t;
                 //print_BinT(root);
                 //printf("\n");
             }
@@ -80,20 +88,20 @@ class tree
     }
     void Create_AVL()
     {
-        bnode *t,*t1,*t2;
+        abnode *t,*t1,*t2;
         int tem;
         int c=0;
         while(num>0)
         {
             c=0;
-            t1 = root;
+            t1 = Aroot;
             t = cr_bn();
             cin>>t->data;
             tem = t->data;
             if(t1 == NULL)
             {
                 root =t;
-                print_BinT(root);
+                print_BinT(Aroot);
                 printf("\n");
             }
             else 
@@ -104,14 +112,14 @@ class tree
                     {
                         t1->left = t;
                         c=1;
-                        print_BinT(root);
+                        print_BinT(Aroot);
                         printf("\n");
                     }
                     else if(t1->right == NULL && t1->data<tem)
                     {
                         t1->right = t;
                         c = 1;
-                        print_BinT(root);
+                        print_BinT(Aroot);
                         printf("\n");
                     }
                     else if(t1->left != NULL && t1->data>tem)
@@ -160,15 +168,14 @@ int main()
     cout<<"Enter the Number of Elements : \n";
     scanf("%d",&n);
     tree tree(n);
-    tree.Create_BST();
-    //avl.Create_AVL();
+    //tree.Create_BST();
+    tree.Create_AVL();
     //avl.print_tree();
-    tree.print_BinT(tree.root);
-    //tree.printt(avl.root);
+    //tree.print_BinT(tree.root);
+    tree.print_BinT(avl.Broot);
     printf("\n");
     //avl.print_tree(avl.root,0,0,2);
 }
-
 /*
 Test Cases:
 BST:

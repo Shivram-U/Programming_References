@@ -4,6 +4,12 @@
 #include<stdio.h>
 #include<math.h>
 using namespace std;
+/*
+Reference:
+1. https://visualgo.net/en/bst?slide=3-1
+2. https://www.geeksforgeeks.org/insertion-in-an-avl-tree/
+3. https://programmerbay.com/avl-tree-a-height-balancing-bst/
+*/
 
 typedef struct nod
 {

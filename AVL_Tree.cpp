@@ -47,12 +47,38 @@ void height(abnode* r,int* m,int k)
     height(r->right,m,k+1);
 }
 
-void Balance_Check(abnode* n)
+abnode* Balance_Check(abnode* n)
 {
+    if(n == NULL)
+        return NULL;
     if(n->bf>1 || n->bf<-1)
     {
-        
+        if(n->bf == 2)
+        {
+            if(n->left->right == NULL)
+            {
+                
+            }
+            else if(n->left->left == NULL)
+            {
+                
+            }
+        }
+        else if(n->bf == -2)
+        {
+            if(n->right->right == NULL)
+            {
+                
+            }
+            else if(n->right->left == NULL)
+            {
+                
+            }
+        }
     }
+    n->left = Balance_Check(n->left);
+    n->right = Balance_Check(n->right);
+    return n;
 }
 
 void Balance_dat(abnode* t)
@@ -64,7 +90,7 @@ void Balance_dat(abnode* t)
         height(t->left,&h1,1);
     if(t->right!=NULL)
         height(t->right,&h2,1);
-    t->bf = abs(h1-h2);
+    t->bf = (h1-h2);
     printf("[%d %d %d %d]\n",t->data,t->bf,h1,h2);
     Balance_dat(t->left);
     Balance_dat(t->right);
@@ -92,6 +118,8 @@ void AVL_insert(abnode** r,int n)
             {
                 t1->left = t;
                 c=1;
+                Balance_dat(root);
+                //t1 = Balance_Check(root,root);
                 //print_ABinT(root);
                 //printf("\n");
             }
@@ -99,12 +127,14 @@ void AVL_insert(abnode** r,int n)
             {
                 t1->right = t;
                 c = 1;
+                Balance_dat(root);
+                //Balance_Check(root,root);
                 //print_ABinT(Aroot);
                 //printf("\n");
             }
             else if(t1->left != NULL && t1->data>tem)
             {
-                t1 = t1->left;
+                t1 = t1 = t1->left;
             }
             else if(t1->right!=NULL && t1->data<tem)
             {
@@ -112,8 +142,7 @@ void AVL_insert(abnode** r,int n)
             }
         }
     }   
-    Balance_dat(root);
-    //Balance_Check(root);
+    
 }
 
 

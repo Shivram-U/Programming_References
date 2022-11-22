@@ -37,7 +37,16 @@ class tree
         t->right= NULL;
         return t;
     }
-    void Create_BST()
+    abnode* cr_abn()
+    {
+        abnode *t = (abnode*)malloc(sizeof(abnode));
+        t->data = -1;
+        t->bf = 0;
+        t->left= NULL;
+        t->right= NULL;
+        return t;
+    }
+    void Create_BST()                                                       // -- COMP
     {
         bnode *t,*t1,*t2;
         int tem;
@@ -85,7 +94,8 @@ class tree
             }
             num--;
         }
-    }
+    }                                                                       // --
+    
     void Create_AVL()
     {
         abnode *t,*t1,*t2;
@@ -95,13 +105,13 @@ class tree
         {
             c=0;
             t1 = Aroot;
-            t = cr_bn();
+            t = cr_abn();
             cin>>t->data;
             tem = t->data;
             if(t1 == NULL)
             {
-                root =t;
-                print_BinT(Aroot);
+                Aroot =t;
+                print_ABinT(Aroot);
                 printf("\n");
             }
             else 
@@ -110,16 +120,17 @@ class tree
                 {
                     if(t1->left==NULL && t1->data>tem)
                     {
+                        
                         t1->left = t;
                         c=1;
-                        print_BinT(Aroot);
+                        print_ABinT(Aroot);
                         printf("\n");
                     }
                     else if(t1->right == NULL && t1->data<tem)
                     {
                         t1->right = t;
                         c = 1;
-                        print_BinT(Aroot);
+                        print_ABinT(Aroot);
                         printf("\n");
                     }
                     else if(t1->left != NULL && t1->data>tem)
@@ -160,21 +171,29 @@ class tree
         print_BinT(m->left);
         print_BinT(m->right);
     }
+    static void print_ABinT(abnode* m)
+    {
+        if(m == NULL)
+            return;
+        printf("[[%d %d] [%d %d] [%d %d] ]",m->data,m->bf,(m->left!=NULL)?m->left->data:-1,(m->left!=NULL)?m->left->bf:-1,(m->right!=NULL)?m->right->data:-1,(m->right!=NULL)?m->right->bf:-1);
+        print_ABinT(m->left);
+        print_ABinT(m->right);
+    }
 };
 
 int main()
 {
     int n;
-    cout<<"Enter the Number of Elements : \n";
+    //cout<<"Enter the Number of Elements : \n";
     scanf("%d",&n);
     tree tree(n);
-    //tree.Create_BST();
     tree.Create_AVL();
+    //tree.Create_AVL();
     //avl.print_tree();
     //tree.print_BinT(tree.root);
-    tree.print_BinT(avl.Broot);
+    tree.print_ABinT(tree.Aroot);
     printf("\n");
-    //avl.print_tree(avl.root,0,0,2);
+    ////avl.print_tree(avl.root,0,0,2);
 }
 /*
 Test Cases:

@@ -63,7 +63,7 @@ void Balance_Dat(abnode* t)
     if(t->right!=NULL)
         height(t->right,&h2,1);
     t->bf = (h1-h2);
-    printf("[%d %d %d %d]\n",t->data,t->bf,h1,h2);
+    //printf("[%d %d %d %d]\n",t->data,t->bf,h1,h2);
     Balance_Dat(t->left);
     Balance_Dat(t->right);
 }
@@ -72,48 +72,93 @@ abnode* Balance_Check(abnode* n)
 {
     if(n == NULL)
         return NULL;
+    printf("{{%d}{%d}}\n",n->bf,n->data);
     if(n->bf>1 || n->bf<-1 && (n->left==NULL || n->right==NULL))
     {
-        abnode *t;
+        abnode *t = n;
         if(n->bf == 2)
         {
             printf("case 1 : [%d %d]",n->data,n->left->data);
-            if(n->left->right == NULL)
+            if(n->right == NULL)
             {
-                printf("[%d]\n",n->left->left->data);
-                
-                t = n->left;
-                n->left->right = n;
-                n->left = NULL;
-                
+                if(n->left->right == NULL)
+                {
+                    printf("[%d]\n",n->left->left->data);
+                    t = n->left;
+                    n->left->right = n;
+                    n->left = NULL;
+                }
+                else if(n->left->left == NULL) 
+                {
+                    printf("[%d]\n",n->left->right->data);
+                    t = n->left->right;
+                    t->left= n->left;
+                    n->left->right = NULL;
+                    t->right = n;
+                    n->left= NULL;
+                }
             }
-            else 
+            else
             {
-                printf("[%d]\n",n->left->right->data);
-                t = n->left->right;
-                t->left= n->left;
-                n->left->right = NULL;
-                t->right = n;
-                n->left= NULL;
+                if(n->left->right->left == NULL && n->left->right->left == NULL)
+                {
+                    t = n->left;
+                    n->left = n->left->right;
+                    t->right = n;
+                }
+                else
+                {
+                    t = n->left;
+                    n->left = t->right;
+                    n->left->left = t;
+                    t = n->left;
+                    n->left = n->left->right;
+                    t->right = n;
+                }
             }
             return t;
         }
         else if(n->bf == -2)
         {
-            printf("case 2 : [%d %d]\n",n->data,n->right->data);
-            if(n->right->left == NULL)
+            
+            printf("case 2 : [%d %d]",n->data,n->right->data);
+            if(n->left == NULL)
             {
-                t = n->right;
-                n->right->left = n;
-                n->right = NULL;
+                if(n->right->left == NULL)
+                {
+                    //printf("[%d]\n",n->left->left->data);
+                    t = n->right;
+                    t->left = n;
+                    n->right = NULL;
+                }
+                else if(n->right->right == NULL) 
+                {
+                    //printf("[%d]\n",n->left->right->data);
+                    t = n->right->left;
+                    t->right = n->right;
+                    n->right->left = NULL;
+                    t->left = n;
+                    n->right= NULL;
+                }
             }
-            else 
+            else
             {
-                t = n->right->left;
-                t->left= n;
-                t->right = n->right;
-                n->right->left = NULL;
-                n->right= NULL;
+                if(n->right->left->left == NULL && n->right->left->right == NULL)
+                {
+                    t = n->right;
+                    n->right = n->right->left;
+                    t->left = n;
+                }
+                else
+                {
+                    t = n->right->left;
+                    t->right = n->right;
+                    n->left = NULL;
+                    n->right = t;
+                     t = n->right;
+                    n->right = n->right->left;
+                    t->left = n;
+                }
             }
             return t;
         }

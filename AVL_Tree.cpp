@@ -71,12 +71,19 @@ void Balance_Dat(abnode* t)
 
 abnode* Balance_Check(abnode* n)
 {
+abnode *t = n;
     if(n == NULL)
         return NULL;
-    printf("{{%d}{%d}}\n",n->bf,n->data);
-    if(n->bf>1 || n->bf<-1)
+    n->left = Balance_Check(n->left);
+    n->right = Balance_Check(n->right);
+    Balance_Dat(n);
+    //print_ABinT(n);
+    printf("{%d %d}||meow \n",n->bf,n->data);
+    
+    printf("meow");
+    if(n->bf>1  || (n->bf)<-1)
     {
-        abnode *t = n;
+    	printf("Start");
         if(n->bf == 2)
         {
             printf("case 1 : [%d %d]",n->data,n->left->data);
@@ -119,15 +126,16 @@ abnode* Balance_Check(abnode* n)
             }
             return t;
         }
-        else if(n->bf == -7)
+        else if(n->bf == -2)
         {
             
             printf("case 2 : [%d %d]",n->data,n->right->data);
+            print_ABinT(n);
             if(n->left == NULL)
             {
                 if(n->right->left == NULL)
                 {
-                    //printf("[%d]\n",n->left->left->data);
+                    printf("[%d]\n",n->right->right->data);
                     t = n->right;
                     t->left = n;
                     n->right = NULL;
@@ -144,29 +152,40 @@ abnode* Balance_Check(abnode* n)
             }
             else
             {
-                if(n->right->left->left == NULL && n->right->left->right == NULL)
+            printf("caught");
+                if(n->right->right->right == NULL)
                 {
-                    t = n->right;
-                    n->right = n->right->left;
-                    t->left = n;
+                
+                	if(t->right->left->left == NULL)
+                	{
+     
+                	    t = n->right->left->right;
+               		    t->right = n->right;
+               		    t->left = n->right->left;
+               		    n->right->left->right = NULL;
+                    	    n->right = t;
+                    	}
+                    	else
+                    	{
+            
+                    		t = n->right->left;
+                    		t->right = n->right;
+                    		n->right->left = NULL;
+                    		n->right = t;
+                    	}
                 }
-                else
-                {
-                    t = n->right->left;
-                    t->right = n->right;
-                    n->left = NULL;
-                    n->right = t;
-                     t = n->right;
-                    n->right = n->right->left;
-                    t->left = n;
-                }
+                t = n->right;
+                n->right = n->right->left;
+                t->left = n;
+                print_ABinT(t);
+                printf("ggg");
             }
-            return t;
         }
     }
-    n->left = Balance_Check(n->left);
-    n->right = Balance_Check(n->right);
-    return n;
+    printf("check1\n");
+    printf("done");
+    printf("[[%d]]",t->data);
+    return t;
 }
 
 
@@ -180,7 +199,7 @@ void AVL_insert(abnode** r,int n)
     tem = t->data;
     if(root == NULL)
     {
-        *r =t;
+        root =t;
         print_ABinT(root);
         printf("\n");
     }
@@ -196,7 +215,7 @@ void AVL_insert(abnode** r,int n)
                 Balance_Dat(root);
                 root = Balance_Check(root);
                 Balance_Dat(root);
-                print_ABinT(root);
+                //print_ABinT(root);
                 //printf("\n");
             }
             else if(t1->right == NULL && t1->data<tem)
@@ -206,7 +225,7 @@ void AVL_insert(abnode** r,int n)
                 Balance_Dat(root);
                 root = Balance_Check(root);
                 Balance_Dat(root);
-                print_ABinT(root);
+                //print_ABinT(root);
                 //printf("\n");
             }
             else if(t1->left != NULL && t1->data>tem)
@@ -218,8 +237,8 @@ void AVL_insert(abnode** r,int n)
                 t1 = t1->right;
             }
         }
-    }   
-    
+    }
+    *r = root;   
 }
 
 /*
@@ -263,12 +282,19 @@ int main()
     printf("\n");
     */
     abnode *root = NULL;
-    int a[] = {21,2,4343,20,33,25,213,322,1244,2232,123,3};
+    int a[30];
+    for(int i=0;i<30;i++)
+    {
+    	a[i] = i+1;
+    }
     int a1[] = {21,2,4343,20,33,25};
-    for(int i=0;i<12;i++)
+    for(int i=0;i<30;i++)
     {
         AVL_insert(&root,a[i]);
+        printf("\n");
+        print_ABinT(root);
         printf("\n\n\n\n");
+        
     }
     print_ABinT(root);
     int h;
@@ -305,6 +331,7 @@ int main()
     ////avl.print_tree(avl.root,0,0,2);
 }*/
 /*
+{21,2,4343,20,33,25,213,322,1244,2232,123,3};
 Test Cases:
 BST:
 15

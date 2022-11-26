@@ -45,12 +45,13 @@ void print_ABinT(abnode* m)
 
 void height(abnode* r,int* m,int k)
 {
-    if(r == NULL)
-        return;
-    if(k>(*m))
-        *m = k;
-    height(r->left,m,k+1);
-    height(r->right,m,k+1);
+    if(r!=NULL)
+    {
+        if(k>(*m))
+            (*m) = k;
+        height(r->left,m,k+1);
+        height(r->right,m,k+1);
+    }
 }
 
 void Balance_Dat(abnode* t)
@@ -73,7 +74,7 @@ abnode* Balance_Check(abnode* n)
     if(n == NULL)
         return NULL;
     printf("{{%d}{%d}}\n",n->bf,n->data);
-    if(n->bf>1 || n->bf<-1 && (n->left==NULL || n->right==NULL))
+    if(n->bf>1 || n->bf<-1)
     {
         abnode *t = n;
         if(n->bf == 2)
@@ -118,7 +119,7 @@ abnode* Balance_Check(abnode* n)
             }
             return t;
         }
-        else if(n->bf == -2)
+        else if(n->bf == -7)
         {
             
             printf("case 2 : [%d %d]",n->data,n->right->data);
@@ -221,6 +222,22 @@ void AVL_insert(abnode** r,int n)
     
 }
 
+/*
+Memory Allocation:
+    Reference:
+        1.https://stackoverflow.com/questions/40365437/c-how-to-use-free-to-free-a-struct-in-memory
+*/
+void deall(abnode* t)
+{
+    if(t!=NULL)
+    {
+        deall(t->left);
+        deall(t->right);
+        //free(t->left);                    // not required
+        //free(t->right);                   // not required
+        free(t);
+    }
+}
 
 int main()
 {
@@ -257,6 +274,7 @@ int main()
     int h;
     height(root,&h,0);
     printf("root Height : %d\n",h);
+    deall(root);
 }
 /*
 static void print_BinT(bnode* m)

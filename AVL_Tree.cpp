@@ -9,7 +9,9 @@ Reference:
 1. https://visualgo.net/en/bst?slide=3-1
 2. https://www.geeksforgeeks.org/insertion-in-an-avl-tree/
 3. https://programmerbay.com/avl-tree-a-height-balancing-bst/
+4. 1.https://stackoverflow.com/questions/40365437/c-how-to-use-free-to-free-a-struct-in-memory
 */
+
 
 typedef struct nod
 {
@@ -18,13 +20,41 @@ typedef struct nod
     
 }bnode;
 
-typedef struct nod1
+typedef struct nod1                                 // AVL tree Node
 {
     int data,bf;
     struct nod1 *left,*right;
 }abnode;
 
-abnode* cr_abn()
+
+void print_AVL_T(abnode* m)                         // AVL tree data print
+{
+    if(m == NULL)
+        return;
+    printf("\n[[%d %d] [%d %d] [%d %d]]",m->data,m->bf,(m->left!=NULL)?m->left->data:-1,(m->left!=NULL)?m->left->bf:-10,(m->right!=NULL)?m->right->data:-1,(m->right!=NULL)?m->right->bf:-10);
+    print_AVL_T(m->left);
+    print_AVL_T(m->right);
+}
+
+void print_AVL_Struct(abnode* r,int &k,int &n)              // requires Multi threading Concept
+{
+    if( r!=NULL )
+    {
+        printf("%d ",r->data);
+        if(k == n)
+        {
+            printf("[%d %d]\n",n,k);
+            (k==0)?k=1:1;
+            k*=2;
+            n=0;
+        }
+        n++;
+        print_AVL_Struct(r->left,k,n);
+        print_AVL_Struct(r->right,k,n);
+    }
+}
+
+abnode* Create_AVL_Node()                                    // AVL tree Node Creation
 {
     abnode* t = (abnode*)malloc(sizeof(abnode));
     t->left = NULL;
@@ -34,27 +64,29 @@ abnode* cr_abn()
     return t;
 }
 
-void print_ABinT(abnode* m)
-{
-    if(m == NULL)
-        return;
-    printf("[[%d %d] [%d %d] [%d %d] ]\n",m->data,m->bf,(m->left!=NULL)?m->left->data:-1,(m->left!=NULL)?m->left->bf:-10,(m->right!=NULL)?m->right->data:-1,(m->right!=NULL)?m->right->bf:-10);
-    print_ABinT(m->left);
-    print_ABinT(m->right);
-}
-
-void height(abnode* r,int* m,int k)
+void height(abnode* r,int* m,int k)                     // height of an AVL tree.
 {
     if(r!=NULL)
     {
-        if(k>(*m))
+        if(k>=(*m))
             (*m) = k;
         height(r->left,m,k+1);
         height(r->right,m,k+1);
     }
 }
 
-void Balance_Dat(abnode* t)
+void deall(abnode* t)                               // Memory Deallocation of the Nodes in the AVL tree
+{
+    if(t!=NULL)
+    {
+        deall(t->left);
+        deall(t->right);
+        free(t);
+    }
+}
+
+
+void Balance_Upd(abnode* t)                             // Balance Factor of a AVL tree
 {
     if(t == NULL)
         return;
@@ -64,41 +96,32 @@ void Balance_Dat(abnode* t)
     if(t->right!=NULL)
         height(t->right,&h2,1);
     t->bf = (h1-h2);
-    //printf("[%d %d %d %d]\n",t->data,t->bf,h1,h2);
-    Balance_Dat(t->left);
-    Balance_Dat(t->right);
+    Balance_Upd(t->left);
+    Balance_Upd(t->right);
 }
 
-abnode* Balance_Check(abnode* n)
+abnode* Balance_Check(abnode* n)                            // Balance Factor Checking for all the Node in the AVL tree.              
 {
-abnode *t = n;
+    abnode *t = n;
     if(n == NULL)
         return NULL;
     n->left = Balance_Check(n->left);
     n->right = Balance_Check(n->right);
-    Balance_Dat(n);
-    //print_ABinT(n);
-    printf("{%d %d}||meow \n",n->bf,n->data);
-    
-    printf("meow");
+    Balance_Upd(n);
     if(n->bf>1  || (n->bf)<-1)
     {
-    	printf("Start");
         if(n->bf == 2)
-        {
-            printf("case 1 : [%d %d]",n->data,n->left->data);
+        { 
             if(n->right == NULL)
             {
                 if(n->left->right == NULL)
                 {
-                    printf("[%d]\n",n->left->left->data);
                     t = n->left;
                     n->left->right = n;
                     n->left = NULL;
                 }
                 else if(n->left->left == NULL) 
                 {
-                    printf("[%d]\n",n->left->right->data);
                     t = n->left->right;
                     t->left= n->left;
                     n->left->right = NULL;
@@ -129,20 +152,16 @@ abnode *t = n;
         else if(n->bf == -2)
         {
             
-            printf("case 2 : [%d %d]",n->data,n->right->data);
-            print_ABinT(n);
             if(n->left == NULL)
             {
                 if(n->right->left == NULL)
                 {
-                    printf("[%d]\n",n->right->right->data);
                     t = n->right;
                     t->left = n;
                     n->right = NULL;
                 }
                 else if(n->right->right == NULL) 
                 {
-                    //printf("[%d]\n",n->left->right->data);
                     t = n->right->left;
                     t->right = n->right;
                     n->right->left = NULL;
@@ -152,7 +171,6 @@ abnode *t = n;
             }
             else
             {
-            printf("caught");
                 if(n->right->right->right == NULL)
                 {
                 
@@ -163,45 +181,36 @@ abnode *t = n;
                		    t->right = n->right;
                		    t->left = n->right->left;
                		    n->right->left->right = NULL;
-                    	    n->right = t;
-                    	}
-                    	else
-                    	{
-            
-                    		t = n->right->left;
-                    		t->right = n->right;
-                    		n->right->left = NULL;
-                    		n->right = t;
-                    	}
+                    	n->right = t;
+                    }
+                    else
+                	{
+                		t = n->right->left;
+                		t->right = n->right;
+                		n->right->left = NULL;
+                		n->right = t;
+                	}
                 }
                 t = n->right;
                 n->right = n->right->left;
                 t->left = n;
-                print_ABinT(t);
-                printf("ggg");
             }
         }
     }
-    printf("check1\n");
-    printf("done");
-    printf("[[%d]]",t->data);
     return t;
 }
 
 
-void AVL_insert(abnode** r,int n)
+void AVL_Insert(abnode** r,int n)                               // Insertion on AVL tree.
 {
     int c=0,tem;
     abnode *t,*t1,*root = *r;
-    t = cr_abn();
+    t = Create_AVL_Node();
     t->data = n;
-    //cin>>t->data;
     tem = t->data;
     if(root == NULL)
     {
         root =t;
-        print_ABinT(root);
-        printf("\n");
     }
     else 
     {
@@ -212,21 +221,17 @@ void AVL_insert(abnode** r,int n)
             {
                 t1->left = t;
                 c=1;
-                Balance_Dat(root);
+                Balance_Upd(root);
                 root = Balance_Check(root);
-                Balance_Dat(root);
-                //print_ABinT(root);
-                //printf("\n");
+                Balance_Upd(root);
             }
             else if(t1->right == NULL && t1->data<tem)
             {
                 t1->right = t;
                 c = 1;
-                Balance_Dat(root);
+                Balance_Upd(root);
                 root = Balance_Check(root);
-                Balance_Dat(root);
-                //print_ABinT(root);
-                //printf("\n");
+                Balance_Upd(root);
             }
             else if(t1->left != NULL && t1->data>tem)
             {
@@ -240,114 +245,157 @@ void AVL_insert(abnode** r,int n)
     }
     *r = root;   
 }
-
-/*
-Memory Allocation:
-    Reference:
-        1.https://stackoverflow.com/questions/40365437/c-how-to-use-free-to-free-a-struct-in-memory
-*/
-void deall(abnode* t)
+ 
+int AVL_Delete(abnode** r,int a)
 {
-    if(t!=NULL)
+    abnode *t = *r,*t1 = *r,*t2 = NULL,*t3;
+    int c=0;
+    while(true)
     {
-        deall(t->left);
-        deall(t->right);
-        //free(t->left);                    // not required
-        //free(t->right);                   // not required
-        free(t);
+        if(t == NULL)
+            return 0;
+        if(t->data == a)
+        {
+            //printf("[[ %d %d ]]\n",t->data,t1->data);
+            if(t->right == NULL)
+            {
+                if(t != t1)
+                {
+                    if(c == 0)
+                    {
+                        t1->left = t->left;
+                    }
+                    else
+                    {
+                        t1->right = t->right;
+                    }
+                }
+                else
+                {
+                    *r = t->left;
+                }
+                free(t);
+            }
+            else
+            {
+                //printf("\n");
+                //print_AVL_T(*r);
+                t2 = t->right;
+                t3 = t;
+                while(t2->left!=NULL)
+                {
+                    t3 = t2;
+                    t2 = t2->left;
+                }
+                if(t3!=t)
+                {
+                    t3->left = NULL;
+                    t2->right = t->right;
+                }
+                else
+                {
+                    t3->right = NULL;
+                }
+                //else
+                    //t3->right = NULL;
+                    t2->left = t->left;
+                //printf("{{%d %d %d }}\n",t2->data,t3->data,t1->data);
+                
+                if(t1 != t)
+                {
+                    if(c == 0)
+                        t1->left = t2;
+                    else
+                        t1->right = t2;
+                    free(t);
+                }
+                else
+                {
+                    (*r) = t2;
+                }
+            }
+            Balance_Upd(*r);
+            (*r) = Balance_Check(*r);
+            return 1;
+        }
+        else
+        {
+            t1 = t;
+            if(t->data>a)
+            {
+                t = t->left;
+                c = 0;
+            }
+            else
+            {
+                t = t->right;
+                c = 1;
+            }
+        }
     }
 }
 
 int main()
 {
-    // Height Calculation of a Tree:
-    /*
-    abnode *root1 = NULL,*root2 = NULL;
-    int a[] = {21,2,4343,20,33,25,213,322,1244,2232,123,3};
-    int b[] = {21,2,4343,20,33,25,213,322,1244,123,3};
-    for(int i=0;i<12;i++)
-    {
-        AVL_insert(&root1,a[i]);
-    }
-    for(int i=0;i<11;i++)
-    {
-        AVL_insert(&root2,b[i]);
-    }
-    print_ABinT(root1);
-    int h1,h2;
-    height(root1,&h1,0);
-    height(root2,&h2,0);
-    printf("root1 Height : %d\n",h1);
-    printf("root2 Height : %d\n",h2);
-    printf("\n");
-    */
+    int h = 0;
     abnode *root = NULL;
     int a[30];
     for(int i=0;i<30;i++)
     {
-    	a[i] = i+1;
+        a[i] = i+1;
     }
-    int a1[] = {21,2,4343,20,33,25};
-    for(int i=0;i<30;i++)
+    
+    // Insertion of elements in AVL Tree.
+    for(int i=0;i<10;i++)
     {
-        AVL_insert(&root,a[i]);
+        cout << "\nInsertion of Element "<<a[i];
+        AVL_Insert(&root,a[i]);
+        print_AVL_T(root);
         printf("\n");
-        print_ABinT(root);
-        printf("\n\n\n\n");
+    }
+    
+    // Height of AVL Tree Created.
+    height(root,&h,0);
+    printf("Tree height : %d\n\n",h);
+    
+    // Deletion of elements in AVL Tree.
+    for(int i=0;i<10;i++)
+    {
+        cout << "\nDeletion of Element "<<a[i];
+        AVL_Delete(&root,a[i]);
+        print_AVL_T(root);
+        printf("\n");
+    }
+    cout << "Tree completely deleted\n";
+    /*
+    abnode *root = NULL;
+    int a[30];
+    try
+    {
+        for(int i=0;i<15;i++)
+        {
+        	a[i] = i+1;
+        }
+        int a1[] = {21,2,4343,20,33,25};
+        for(int i=0;i<15;i++)
+        {
+            AVL_insert(&root,a[i]);    
+        }
+        print_AVL_T(root);
+        /*
+        int n=0,k=0;
+        //print_AVL_Struct(root,k,n);
+        int h=0;                                // Zero Value assignment is required for Height Analysis.
+        height(root,&h,0);
+        printf("root Height : %d\n",h);
         
     }
-    print_ABinT(root);
-    int h;
-    height(root,&h,0);
-    printf("root Height : %d\n",h);
-    deall(root);
-}
-/*
-static void print_BinT(bnode* m)
-{
-    if(m == NULL)
-        return;
-    printf("[%d %d %d]",m->data,(m->left!=NULL)?m->left->data:-1,(m->right!=NULL)?m->right->data:-1);
-    print_BinT(m->left);
-    print_BinT(m->right);
+    catch(const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
+        printf("Deal Done");
+    }*/
+        //deall(root);
+    printf("Deal Done");
 }
 
-
-
-
-
-int main()
-{
-    int n;
-    //cout<<"Enter the Number of Elements : \n";
-    scanf("%d",&n);
-    tree tree(n);
-    tree.Create_AVL();
-    //tree.Create_AVL();
-    //avl.print_tree();
-    //tree.print_BinT(tree.root);
-    tree.print_ABinT(tree.Aroot);
-    printf("\n");
-    ////avl.print_tree(avl.root,0,0,2);
-}*/
-/*
-{21,2,4343,20,33,25,213,322,1244,2232,123,3};
-Test Cases:
-BST:
-15
-10
-6
-12
-5
-7
-11
-14
-3
-44
-13
-123
-23123
-1232
-22
-23124
-*/

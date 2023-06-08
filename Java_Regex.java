@@ -14,6 +14,9 @@ public class Java_Regex
 		*/	
 			Pattern p1 = Pattern.compile("java");				// Case-sensitive pattern
 			Pattern p2 = Pattern.compile("java",Pattern.CASE_INSENSITIVE);	// Case-insensitive pattern
+		// Pattern properties provided:
+			System.out.println(p1.flags());
+			System.out.println(p2.flags());
 		// Pattern matching || pattern search
 		/*
 			The pattern matching or search is done by creating a matcher class.
@@ -25,6 +28,10 @@ public class Java_Regex
 		// Pattern search results in Search string 
 			System.out.println("Pattern p1 found in m1 :"+m1.find());
 			System.out.println("Pattern p1 found in m2 :"+m2.find());
-			System.out.println("Pattern p2 found in m3 :"+m3.find());
+			System.out.println("Pattern p2 found in m3 :"+m3.find());	
+		// Simple Pattern Match:
+			System.out.println("Pattern match:"+Pattern.matches("java is good","java"));
+			System.out.println("Pattern match:"+Pattern.matches("java","java"));
+			
 	}	
 }
